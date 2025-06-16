@@ -19,10 +19,9 @@ import ProductList from './pages/admin/ProductList';
 import './App.css';
 import './pages/Pages.css';
 import ProductDetail from './pages/ProductDetail';
+import ProductsPage from './pages/ProductsPage';
 
-
-export const backendUrl = import.meta.env.VITE_API_BASE.startsWith('http:') ? import.meta.env.VITE_API_BASE.replace('http:', 'https:')
-  : import.meta.env.VITE_API_BASE;
+export const backendUrl = import.meta.env.VITE_API_BASE;
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAdmin();
@@ -53,6 +52,7 @@ function App() {
           <Navbar />
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/products" element={<ProductsPage />} />
             <Route path="/product/:id" element={<ProductDetail />} /> 
             <Route path="/about" element={<About />} />
             <Route path="/services" element={<Services />} />

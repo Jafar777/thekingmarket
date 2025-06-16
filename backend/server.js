@@ -16,27 +16,12 @@ connectCloudinary()
 
 
 const corsOptions = {
-  origin: function (origin, callback) {
-    // Allow all origins in development
-    if (process.env.NODE_ENV === 'development') {
-      callback(null, true);
-    } else {
-      // Allow specific domains in production
-      const allowedOrigins = [
-        'www.thekingmarket.net',,'thekingmarket.net','https://thekingmarket-frontend.vercel.app',
-        'https://www.yourdomain.com'
-      ];
-      if (allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    }
-  },
+  origin: '*', // Allow all origins temporarily
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 };
+
 // middlewares
 app.use(express.json())
 app.use(cors(corsOptions));
