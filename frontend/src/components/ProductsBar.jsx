@@ -28,7 +28,10 @@ const ProductsBar = () => {
         setError(null);
 
         // Fetch categories 
-        const categoriesResponse = await fetch(`${backendUrl}/api/categories`);
+        const categoriesResponse = await fetch(`${backendUrl}/api/categories`, {
+        mode: 'cors',
+        credentials: 'include'
+      });
         if (!categoriesResponse.ok) {
           const text = await categoriesResponse.text();
           throw new Error(`Categories error (${categoriesResponse.status}): ${text}`);
