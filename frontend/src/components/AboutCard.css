@@ -1,0 +1,300 @@
+/* src/components/About.css */
+.about-section {
+  padding: 120px 20px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.container {
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+.about-card {
+  display: flex;
+  flex-wrap: wrap;
+  background: white;
+  border-radius: 25px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  transform: translateY(0);
+  transition: transform 0.3s ease;
+}
+
+.about-card:hover {
+  transform: translateY(-10px);
+}
+
+.about-content {
+  flex: 1;
+  min-width: 300px;
+  padding: 60px;
+}
+
+.halal-container1 {
+  flex: 0 0 500px; /* Increased width for the badge container */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.halal-badge1 {
+  width: 380px; /* Increased size */
+  height: 380px; /* Increased size */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.halal-icon1 {
+  width: 320px; /* Increased size */
+  height: 320px; /* Increased size */
+  border-radius: 50%;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.halal-text1 {
+  font-size: 8rem; /* Larger font size */
+  font-weight: bold;
+  color: #4CAF50;
+  line-height: 1;
+  margin-top: 20px;
+}
+
+.halal-certified1 {
+  font-size: 2.2rem; /* Larger font size */
+  font-weight: 700;
+  color: #2E7D32;
+  text-align: center;
+  margin-top: 15px;
+  letter-spacing: 1px;
+}
+
+.about-title {
+  font-size: 3rem;
+  color: #2c3e50;
+  margin-bottom: 30px;
+  position: relative;
+}
+
+.about-title::after {
+  content: '';
+  position: absolute;
+  bottom: -15px;
+  left: 0;
+  width: 100px;
+  height: 5px;
+  background: #4CAF50;
+  border-radius: 3px;
+}
+
+.about-description {
+  font-size: 1.2rem;
+  line-height: 1.8;
+  color: #34495e;
+  margin-bottom: 30px;
+}
+
+.stats-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 25px;
+  margin-top: 50px;
+}
+
+.stat-item {
+  background: #f8f9fa;
+  border-radius: 15px;
+  padding: 25px 20px;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  border-top: 5px solid #4CAF50;
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #4CAF50;
+  margin-bottom: 8px;
+}
+
+.stat-label {
+  font-size: 1.1rem;
+  color: #7f8c8d;
+  font-weight: 600;
+}
+
+/* Responsive styles */
+@media (max-width: 1200px) {
+  .halal-container {
+    flex: 0 0 450px;
+  }
+  
+  .halal-badge {
+    width: 340px;
+    height: 340px;
+  }
+  
+  .halal-icon {
+    width: 280px;
+    height: 280px;
+  }
+  
+  .halal-text {
+    font-size: 7rem;
+  }
+  
+  .halal-certified {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .about-content {
+    padding: 50px 40px;
+  }
+  
+  .halal-container {
+    flex: 0 0 400px;
+  }
+  
+  .halal-badge {
+    width: 300px;
+    height: 300px;
+  }
+  
+  .halal-icon {
+    width: 250px;
+    height: 250px;
+  }
+  
+  .halal-text {
+    font-size: 6rem;
+  }
+  
+  .halal-certified {
+    font-size: 1.8rem;
+  }
+  
+  .about-title {
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .about-section {
+    padding: 80px 15px;
+  }
+  
+  .about-card {
+    flex-direction: column;
+  }
+  
+  .halal-container {
+    flex: 0 0 auto;
+    padding: 60px 20px;
+    width: 100%;
+  }
+  
+  .halal-badge {
+    width: 320px;
+    height: 320px;
+  }
+  
+  .halal-icon {
+    width: 280px;
+    height: 280px;
+  }
+  
+  .halal-text {
+    font-size: 6rem;
+  }
+  
+  .halal-certified {
+    font-size: 1.8rem;
+  }
+  
+  .about-title {
+    font-size: 2.2rem;
+  }
+  
+  .about-content {
+    padding: 40px 30px;
+  }
+}
+
+@media (max-width: 576px) {
+  .about-content {
+    padding: 30px 20px;
+  }
+  
+  .about-title {
+    font-size: 2rem;
+  }
+  
+  .about-description {
+    font-size: 1.1rem;
+  }
+  
+  .halal-container {
+    padding: 50px 15px;
+  }
+  
+  .halal-badge {
+    width: 280px;
+    height: 280px;
+  }
+  
+  .halal-icon {
+    width: 240px;
+    height: 240px;
+  }
+  
+  .halal-text {
+    font-size: 5rem;
+  }
+  
+  .halal-certified {
+    font-size: 1.5rem;
+  }
+  
+  .stat-value {
+    font-size: 2rem;
+  }
+  
+  .stat-label {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .halal-badge {
+    width: 240px;
+    height: 240px;
+  }
+  
+  .halal-icon {
+    width: 200px;
+    height: 200px;
+  }
+  
+  .halal-text {
+    font-size: 4rem;
+  }
+  
+  .halal-certified {
+    font-size: 1.3rem;
+  }
+}
