@@ -21,7 +21,8 @@ import './pages/Pages.css';
 import ProductDetail from './pages/ProductDetail';
 
 
-export const backendUrl = import.meta.env.VITE_API_BASE
+export const backendUrl = import.meta.env.VITE_API_BASE.startsWith('http:') ? import.meta.env.VITE_API_BASE.replace('http:', 'https:')
+  : import.meta.env.VITE_API_BASE;
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAdmin();
