@@ -98,7 +98,7 @@ const Footer = () => {
           <div ref={el => columnsRef.current[1] = el} className="footer-column">
             <h3 className="column-title">Our Products</h3>
             <ul className="footer-links">
-              <li><Link to="/products/meats">Fresh Meats</Link></li>
+              <li><Link to="/products">Fresh Meats</Link></li>
               <li><Link to="/products/canned">Canned Goods</Link></li>
               <li><Link to="/products/produce">Fruits & Vegetables</Link></li>
               <li><Link to="/products/dairy">Dairy Products</Link></li>
