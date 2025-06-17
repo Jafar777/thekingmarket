@@ -92,6 +92,7 @@ const Footer = () => {
               <li><Link to="/contact">Contact</Link></li>
               <li><Link to="/privacy">Privacy Policy</Link></li>
               <li><Link to="/terms">Terms of Service</Link></li>
+              <li><Link to="/admin">ADMIN</Link></li>
             </ul>
           </div>
 
@@ -99,11 +100,11 @@ const Footer = () => {
             <h3 className="column-title">Our Products</h3>
             <ul className="footer-links">
               <li><Link to="/products">Fresh Meats</Link></li>
-              <li><Link to="/products/canned">Canned Goods</Link></li>
-              <li><Link to="/products/produce">Fruits & Vegetables</Link></li>
-              <li><Link to="/products/dairy">Dairy Products</Link></li>
-              <li><Link to="/products/bakery">Bakery Items</Link></li>
-              <li><Link to="/products/spices">Spices & Herbs</Link></li>
+              <li><Link to="/products">Canned Goods</Link></li>
+              <li><Link to="/products">Fruits & Vegetables</Link></li>
+              <li><Link to="/products">Dairy Products</Link></li>
+              <li><Link to="/products">Bakery Items</Link></li>
+              <li><Link to="/products">Spices & Herbs</Link></li>
             </ul>
           </div>
 

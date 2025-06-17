@@ -22,7 +22,8 @@ export default function Navbar() {
     { name: 'Home', path: '/' },
     { name: 'About', path: '/about' },
     { name: 'Services', path: '/services' },
-    { name: 'Contact', path: '/contact' }
+    { name: 'Contact', path: '/contact' },
+    { name: 'Products', path: '/products' }
   ];
 
   // تأثير التمرير
