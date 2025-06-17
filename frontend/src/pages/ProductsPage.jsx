@@ -5,36 +5,108 @@ import './ProductsPage.css';
 
 const ProductsPage = () => {
   const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState(null);
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`${backendUrl}/api/product/list`);
         
-        if (!response.ok) {
-          throw new Error(`Failed to load products: ${response.status}`);
-        }
+        // Fetch products
+        const productsResponse = await fetch(`${backendUrl}/api/product/list`);
+        if (!productsResponse.ok) throw new Error(`Products failed: ${productsResponse.status}`);
+        const productsData = await productsResponse.json();
         
-        const data = await response.json();
-        setProducts(data);
+        // Fetch categories
+        const categoriesResponse = await fetch(`${backendUrl}/api/categories`);
+        if (!categoriesResponse.ok) throw new Error(`Categories failed: ${categoriesResponse.status}`);
+        const categoriesData = await categoriesResponse.json();
+        
+        // Add emojis to categories
+        const emojiMap = {
+          'meats': '🍖',
+          'produce': '🥦',
+          'Canned Goods': '🥫',
+          'bakery': '🍞',
+          'dairy': '🥛',
+          'frozen': '❄️',
+          'beverages': '🥤',
+          'snacks': '🍿',
+          'household': '🏠',
+          'personal care': '🧴'
+        };
+        
+        const categoriesWithEmojis = categoriesData.map(category => ({
+          ...category,
+          emoji: emojiMap[category.name.toLowerCase()] || '🛒'
+        }));
+        
+        setProducts(productsData);
+        setFilteredProducts(productsData);
+        setCategories(categoriesWithEmojis);
+        
       } catch (err) {
         console.error('Fetch error:', err);
-        setError('Failed to load products. Please try again later.');
+        setError('Failed to load data. Please try again later.');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchProducts();
+    fetchData();
   }, []);
+
+  const handleCategoryClick = (categoryId) => {
+    if (selectedCategory === categoryId) {
+      // Clicking the same category again clears the filter
+      setSelectedCategory(null);
+      setFilteredProducts(products);
+    } else {
+      // Filter products by category
+      setSelectedCategory(categoryId);
+      const filtered = products.filter(product => 
+        product.category?._id === categoryId || 
+        product.category === categoryId
+      );
+      setFilteredProducts(filtered);
+    }
+  };
 
   return (
     <div className="products-page">
       <div className="container">
         <h1 className="page-title">Our Products</h1>
+        
+        {!loading && categories.length > 0 && (
+          <div className="category-filter">
+            <div className="category-list">
+              {/* "All" category */}
+              <div 
+                className={`category-circle ${!selectedCategory ? 'selected' : ''}`}
+                onClick={() => handleCategoryClick(null)}
+              >
+                <span className="category-emoji">🛒</span>
+                <span className="category-name">All</span>
+              </div>
+              
+              {/* Other categories */}
+              {categories.map(category => (
+                <div 
+                  key={category._id}
+                  className={`category-circle ${selectedCategory === category._id ? 'selected' : ''}`}
+                  onClick={() => handleCategoryClick(category._id)}
+                >
+                  <span className="category-emoji">{category.emoji}</span>
+                  <span className="category-name">{category.name}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
         
         {error && (
           <div className="error-message">
@@ -48,15 +120,18 @@ const ProductsPage = () => {
             <div className="spinner"></div>
             <p>Loading products...</p>
           </div>
-        ) : products.length > 0 ? (
+        ) : filteredProducts.length > 0 ? (
           <div className="products-grid">
-            {products.map(product => (
+            {filteredProducts.map(product => (
               <Product key={product._id} product={product} />
             ))}
           </div>
         ) : (
           <div className="no-products">
-            <p>No products available at the moment</p>
+            <p>No products found in this category</p>
+            <button onClick={() => handleCategoryClick(null)}>
+              View all products
+            </button>
           </div>
         )}
       </div>

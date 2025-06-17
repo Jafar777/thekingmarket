@@ -69,3 +69,75 @@
   font-size: 1.2rem;
   color: #7f8c8d;
 }
+.category-filter {
+  margin: 2rem 0;
+  padding: 1rem 0;
+  overflow-x: auto;
+}
+
+.category-list {
+  display: flex;
+  gap: 1.5rem;
+  padding: 0.5rem 1rem;
+  justify-content: center;
+}
+
+.category-circle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 80px;
+}
+
+.category-circle:hover {
+  transform: translateY(-5px);
+}
+
+.category-circle.selected {
+  transform: scale(1.1);
+}
+
+.category-circle.selected .category-emoji {
+  background: #4CAF50;
+  box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
+}
+
+.category-emoji {
+  font-size: 2rem;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f0f0f0;
+  margin-bottom: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.category-name {
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-align: center;
+  color: #555;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .category-list {
+    justify-content: flex-start;
+    padding: 0.5rem;
+  }
+  
+  .category-circle {
+    min-width: 70px;
+  }
+  
+  .category-emoji {
+    width: 60px;
+    height: 60px;
+    font-size: 1.7rem;
+  }
+}
