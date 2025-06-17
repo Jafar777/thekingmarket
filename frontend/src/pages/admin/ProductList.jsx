@@ -1,86 +1,146 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import { backendUrl } from '../../App';
 import './ProductList.css';
 
 const ProductList = () => {
-  // Sample products - in a real app, this would come from MongoDB
-  const [products, setProducts] = useState([
-    {
-      id: 1,
-      name: 'Fresh Beef Steak',
-      category: 'meats',
-      subcategory: 'Beef',
-      summary: 'Premium quality beef steak',
-      weight: '1.5kg',
-      price: 15.99,
-      images: ['beef.jpg']
-    },
-    {
-      id: 2,
-      name: 'Organic Chicken Breast',
-      category: 'meats',
-      subcategory: 'Chicken',
-      summary: 'Farm-raised organic chicken',
-      weight: '1.2kg',
-      price: 9.99,
-      images: ['chicken.jpg']
-    },
-    {
-      id: 3,
-      name: 'Canned Corn',
-      category: 'canned',
-      subcategory: 'Vegetables',
-      summary: 'Sweet corn in a can',
-      weight: '400g',
-      price: 2.49,
-      images: ['corn.jpg']
-    },
-    {
-      id: 4,
-      name: 'Fresh Apples',
-      category: 'produce',
-      subcategory: 'Fruits',
-      summary: 'Crisp and juicy apples',
-      weight: '2kg',
-      price: 4.99,
-      images: ['apples.jpg']
-    }
-  ]);
-  
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [editingId, setEditingId] = useState(null);
   const [editForm, setEditForm] = useState({});
-  
+  const [categories, setCategories] = useState([]);
+  const [subcategories, setSubcategories] = useState([]);
+  const [subcategoriesLoading, setSubcategoriesLoading] = useState(false);
+
+  // Fetch products
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(`${backendUrl}/api/product/list`);
+        setProducts(response.data);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+        toast.error('Failed to load products');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  // Fetch categories
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get(`${backendUrl}/api/categories`);
+        setCategories(response.data);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  // Fetch subcategories when category changes
+  useEffect(() => {
+    const fetchSubcategories = async () => {
+      if (!editForm.category) {
+        setSubcategories([]);
+        return;
+      }
+
+      try {
+        setSubcategoriesLoading(true);
+        const response = await axios.get(
+          `${backendUrl}/api/subcategories?category=${editForm.category}`
+        );
+        setSubcategories(response.data);
+      } catch (error) {
+        console.error('Error fetching subcategories:', error);
+      } finally {
+        setSubcategoriesLoading(false);
+      }
+    };
+
+    fetchSubcategories();
+  }, [editForm.category]);
+
+  // Initialize edit form
   useEffect(() => {
     if (editingId) {
-      const product = products.find(p => p.id === editingId);
+      const product = products.find(p => p._id === editingId);
       if (product) {
-        setEditForm({ ...product });
+        setEditForm({
+          _id: product._id,
+          name: product.name,
+          description: product.description,
+          category: product.category?._id || product.category,
+          subcategory: product.subcategory?._id || product.subcategory,
+          price: product.price,
+          weight: product.weight || '',
+          images: product.images
+        });
       }
     }
   }, [editingId, products]);
-  
-  const handleDelete = (id) => {
+
+  const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this product?')) {
-      setProducts(products.filter(p => p.id !== id));
+      try {
+        await axios.post(`${backendUrl}/api/product/remove`, { id });
+        setProducts(products.filter(p => p._id !== id));
+        toast.success('Product deleted successfully');
+      } catch (error) {
+        console.error('Error deleting product:', error);
+        toast.error('Failed to delete product');
+      }
     }
   };
-  
+
   const handleEditChange = (e) => {
     const { name, value } = e.target;
     setEditForm(prev => ({ ...prev, [name]: value }));
   };
-  
-  const handleSaveEdit = () => {
-    setProducts(products.map(p => p.id === editingId ? editForm : p));
-    setEditingId(null);
+
+  const handleSaveEdit = async () => {
+    try {
+      const response = await axios.put(
+        `${backendUrl}/api/product/${editForm._id}`,
+        editForm
+      );
+      
+      setProducts(products.map(p => 
+        p._id === editForm._id ? response.data.product : p
+      ));
+      
+      setEditingId(null);
+      toast.success('Product updated successfully');
+    } catch (error) {
+      console.error('Error updating product:', error);
+      toast.error('Failed to update product');
+    }
   };
-  
+
   const filteredProducts = products.filter(product => 
     product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    product.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    product.subcategory.toLowerCase().includes(searchTerm.toLowerCase())
+    (product.category?.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (product.subcategory?.name || '').toLowerCase().includes(searchTerm.toLowerCase())
   );
-  
+
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <div className="spinner"></div>
+        <p>Loading products...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="product-list">
       <h2>Manage Products</h2>
@@ -104,15 +164,15 @@ const ProductList = () => {
         <div className="table-header">
           <div className="header-cell">Product</div>
           <div className="header-cell">Category</div>
-          <div className="header-cell">Summary</div>
+          <div className="header-cell">Description</div>
           <div className="header-cell">Price</div>
           <div className="header-cell actions">Actions</div>
         </div>
         
         <div className="table-body">
           {filteredProducts.map(product => (
-            <div key={product.id} className="table-row">
-              {editingId === product.id ? (
+            <div key={product._id} className="table-row">
+              {editingId === product._id ? (
                 <>
                   <div className="table-cell">
                     <input
@@ -126,46 +186,69 @@ const ProductList = () => {
                   </div>
                   <div className="table-cell">
                     <div className="edit-category">
-                      <input
-                        type="text"
+                      <select
                         name="category"
                         value={editForm.category}
                         onChange={handleEditChange}
                         className="edit-input"
                         required
-                      />
-                      <span>/</span>
-                      <input
-                        type="text"
+                      >
+                        <option value="">Select category</option>
+                        {categories.map(category => (
+                          <option key={category._id} value={category._id}>
+                            {category.name}
+                          </option>
+                        ))}
+                      </select>
+                      <select
                         name="subcategory"
                         value={editForm.subcategory}
                         onChange={handleEditChange}
                         className="edit-input"
                         required
-                      />
+                        disabled={subcategoriesLoading}
+                      >
+                        <option value="">Select subcategory</option>
+                        {subcategories.map(sub => (
+                          <option key={sub._id} value={sub._id}>
+                            {sub.name}
+                          </option>
+                        ))}
+                      </select>
+                      {subcategoriesLoading && <span>Loading...</span>}
                     </div>
                   </div>
                   <div className="table-cell">
-                    <textarea
-                      name="summary"
-                      value={editForm.summary}
+                    <input
+                      type="text"
+                      name="description"
+                      value={editForm.description}
                       onChange={handleEditChange}
                       className="edit-input"
-                      rows="2"
                       required
                     />
                   </div>
                   <div className="table-cell">
-                    <input
-                      type="number"
-                      name="price"
-                      value={editForm.price}
-                      onChange={handleEditChange}
-                      step="0.01"
-                      min="0.01"
-                      className="edit-input"
-                      required
-                    />
+                    <div className="price-edit">
+                      <input
+                        type="number"
+                        name="price"
+                        value={editForm.price}
+                        onChange={handleEditChange}
+                        step="0.01"
+                        min="0.01"
+                        className="edit-input"
+                        required
+                      />
+                      <input
+                        type="text"
+                        name="weight"
+                        value={editForm.weight}
+                        onChange={handleEditChange}
+                        placeholder="Weight (optional)"
+                        className="edit-input"
+                      />
+                    </div>
                   </div>
                   <div className="table-cell actions">
                     <button onClick={handleSaveEdit} className="save-btn">💾</button>
@@ -178,7 +261,11 @@ const ProductList = () => {
                     <div className="product-info">
                       <div className="product-image">
                         {product.images && product.images.length > 0 ? (
-                          <div className="image-placeholder">{product.name.charAt(0)}</div>
+                          <img 
+                            src={product.images[0]} 
+                            alt={product.name}
+                            className="product-img"
+                          />
                         ) : (
                           <div className="no-image">📷</div>
                         )}
@@ -188,20 +275,22 @@ const ProductList = () => {
                   </div>
                   <div className="table-cell">
                     <div className="category-info">
-                      <span className="category">{product.category}</span>
-                      <span className="subcategory">{product.subcategory}</span>
+                      <span className="category">{product.category?.name || 'Uncategorized'}</span>
+                      {product.subcategory?.name && (
+                        <span className="subcategory"> / {product.subcategory.name}</span>
+                      )}
                     </div>
                   </div>
                   <div className="table-cell">
-                    <div className="product-summary">{product.summary}</div>
+                    <div className="product-description">{product.description}</div>
                   </div>
                   <div className="table-cell">
                     <div className="product-price">${product.price.toFixed(2)}</div>
                     {product.weight && <div className="product-weight">{product.weight}</div>}
                   </div>
                   <div className="table-cell actions">
-                    <button onClick={() => setEditingId(product.id)} className="edit-btn">✏️</button>
-                    <button onClick={() => handleDelete(product.id)} className="delete-btn">🗑️</button>
+                    <button onClick={() => setEditingId(product._id)} className="edit-btn">✏️</button>
+                    <button onClick={() => handleDelete(product._id)} className="delete-btn">🗑️</button>
                   </div>
                 </>
               )}

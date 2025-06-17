@@ -43,38 +43,57 @@ const AdminLoginRoute = () => {
   return isAuthenticated ? <Navigate to="/admin/dashboard" replace /> : <AdminLogin />;
 };
 
+// New component that uses location
+const AppContent = () => {
+  return (
+    <Routes>
+      <Route path="/" element={<PublicLayout><Home /></PublicLayout>} />
+      <Route path="/products" element={<PublicLayout><ProductsPage /></PublicLayout>} />
+      <Route path="/product/:id" element={<PublicLayout><ProductDetail /></PublicLayout>} />
+      <Route path="/about" element={<PublicLayout><About /></PublicLayout>} />
+      <Route path="/services" element={<PublicLayout><Services /></PublicLayout>} />
+      <Route path="/contact" element={<PublicLayout><Contact /></PublicLayout>} />
+      <Route path="/privacy" element={<PublicLayout><Privacy /></PublicLayout>} />
+      <Route path="/terms" element={<PublicLayout><Terms /></PublicLayout>} />
+      <Route path="/admin/*" element={<AdminLoginRoute />} />
+      <Route 
+        path="/admin/dashboard" 
+        element={
+          <ProtectedRoute>
+            <AdminLayout><AdminDashboard /></AdminLayout>
+          </ProtectedRoute>
+        } 
+      >
+        <Route index element={<DashboardHome />} />
+        <Route path="add-product" element={<AddProduct />} />
+        <Route path="products" element={<ProductList />} />
+      </Route>
+    </Routes>
+  );
+};
+
+// Layout for public routes (with navbar/footer)
+const PublicLayout = ({ children }) => (
+  <>
+    <Navbar />
+    {children}
+    <Footer />
+    <WhatsAppButton />
+  </>
+);
+
+// Layout for admin routes (without navbar/footer)
+const AdminLayout = ({ children }) => (
+  <>{children}</>
+);
+
 function App() {
   return (
     <AdminProvider>
       <Router>
         <ScrollToTop />
         <div className="App">
-          <Navbar />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/products" element={<ProductsPage />} />
-            <Route path="/product/:id" element={<ProductDetail />} /> 
-            <Route path="/about" element={<About />} />
-            <Route path="/services" element={<Services />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/privacy" element={<Privacy />} />
-            <Route path="/terms" element={<Terms />} />
-            <Route path="/admin/*" element={<AdminLoginRoute />} />
-            <Route 
-              path="/admin/dashboard" 
-              element={
-                <ProtectedRoute>
-                  <AdminDashboard />
-                </ProtectedRoute>
-              } 
-            >
-              <Route index element={<DashboardHome />} />
-              <Route path="add-product" element={<AddProduct />} />
-              <Route path="products" element={<ProductList />} />
-            </Route>
-          </Routes>
-          <Footer />
-          <WhatsAppButton />
+          <AppContent />
         </div>
       </Router>
     </AdminProvider>
