@@ -119,36 +119,60 @@ export const removeProduct = async (req, res) => {
 
 // Function for single product info
 export const singleProduct = async (req, res) => {
-    try {
-        const { productId } = req.body;
-        if (!productId) {
-            return res.status(400).json({
-                success: false,
-                message: "Product ID is required"
-            });
-        }
-
-        const product = await productModel.findById(productId)
-            .populate('category')
-            .populate('subCategory');
-
-        if (!product) {
-            return res.status(404).json({
-                success: false,
-                message: "Product not found"
-            });
-        }
-
-        res.json({
-            success: true,
-            product
-        });
-
-    } catch (error) {
-        console.error('Error fetching product:', error);
-        res.status(500).json({
-            success: false,
-            message: error.message || "Internal Server Error"
-        });
+  try {
+    // Get ID from URL parameters instead of request body
+    const { id } = req.params;
+    
+    if (!id) {
+      return res.status(400).json({
+        success: false,
+        message: "Product ID is required"
+      });
     }
+
+    const product = await productModel.findById(id)
+      .populate('category')
+      .populate('subCategory');
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found"
+      });
+    }
+
+    res.json({
+      success: true,
+      product
+    });
+
+  } catch (error) {
+    console.error('Error fetching product:', error);
+    res.status(500).json({
+      success: false,
+      message: error.message || "Internal Server Error"
+    });
+  }
+};
+export const getProductById = async (req, res) => {
+  try {
+    console.log(`Fetching product with ID: ${req.params.id}`);
+    
+   const product = await productModel.findById(req.params.id)
+      .populate('category', 'name')
+      .populate('subCategory', 'name'); // Changed from 'subcategory' to 'subCategory'
+    
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+    
+    console.log('Product found:', product.name);
+    res.json(product);
+  } catch (err) {
+    console.error('Error fetching product:', err);
+    res.status(500).json({ 
+      message: 'Server error',
+      error: err.message 
+    });
+  }
 };

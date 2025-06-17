@@ -7,7 +7,7 @@ import './Product.css';
 const Product = ({ product }) => {
   const navigate = useNavigate();
   // Use first image if available
-  const mainImage = product.images?.[0] || '';
+  const mainImage = product.images?.[0];
 
 
    const handleClick = () => {
@@ -50,3 +50,4 @@ const Product = ({ product }) => {
 };
 
 export default Product;
+//    navigate(`/product/${product._id}`);
