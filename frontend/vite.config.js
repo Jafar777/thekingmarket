@@ -12,7 +12,7 @@ export default defineConfig({
     strictPort: true, // Exit if port is unavailable
   },
   preview: {
-    host: '0.0.0.0', // Also for preview (production build)
+    host: '0.0.0.0' || thekingmarket-front.onrender.com, // Also for preview (production build)
     port: process.env.PORT || 4173,
     strictPort: true,
   },
