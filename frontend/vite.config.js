@@ -15,7 +15,7 @@ export default defineConfig({
     strictPort: true,
     // Add this section to allow your Render host
     allowedHosts: [
-      'thekingmarket-front.onrender.com' // Allow Render host
+      'all' // Allow Render host
     ]
   }
 })
