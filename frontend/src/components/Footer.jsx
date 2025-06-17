@@ -120,7 +120,7 @@ const Footer = () => {
               </li>
               <li>
                 <FaEnvelope className="contact-icon" />
-                <span>info@kingmarket.com</span>
+                <span>info@kingmarket.net</span>
               </li>
               <li>
                 <FaClock className="contact-icon" />

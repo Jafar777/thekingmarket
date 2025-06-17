@@ -104,7 +104,7 @@ const OurLocation = () => {
           <div className="info-card">
             <h3>Contact</h3>
             <p>Phone: +1 (540) 450-8892</p>
-            <p>Email: info@kingmarket.com</p>
+            <p>Email: info@kingmarket.net</p>
           </div>
         </div>
       </div>
