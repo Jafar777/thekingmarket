@@ -85,3 +85,21 @@
   transform: translateY(-5px);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 }
+.product-subcategory {
+  font-size: 0.8rem;
+  color: #555;
+  padding: 3px 8px;
+  background: #e8f5e9;
+  border-radius: 15px;
+  display: inline-block;
+  margin-bottom: 5px;
+}
+
+.product-category {
+  font-size: 0.9rem;
+  color: #7f8c8d;
+  padding: 5px 10px;
+  background: #f1f8e9;
+  border-radius: 20px;
+  display: inline-block;
+}
