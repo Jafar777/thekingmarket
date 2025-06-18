@@ -37,7 +37,8 @@ const ProductsPage = () => {
           'beverages': '🥤',
           'snacks': '🍿',
           'household': '🏠',
-          'personal care': '🧴'
+          'personal care': '🧴',
+          'grain food':'🌾'
         };
         
         const categoriesWithEmojis = categoriesData.map(category => ({

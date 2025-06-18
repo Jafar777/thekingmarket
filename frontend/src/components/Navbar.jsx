@@ -5,7 +5,7 @@ import { Link, useLocation } from 'react-router-dom';
 import './Navbar.css';
 import logo from '../assets/logo.png';
 
-// تسجيل مكون ScrollTrigger مع GSAP
+// Register ScrollTrigger with GSAP
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Navbar() {
@@ -17,7 +17,7 @@ export default function Navbar() {
   const hamburgerRef = useRef(null);
   const location = useLocation();
 
-  // روابط القائمة
+  // Navigation links
   const navLinks = [
     { name: 'Home', path: '/' },
     { name: 'About', path: '/about' },
@@ -26,7 +26,7 @@ export default function Navbar() {
     { name: 'Products', path: '/products' }
   ];
 
-  // تأثير التمرير
+  // Scroll effect
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 10);
@@ -36,12 +36,10 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // أنيميشن الدخول
+  // Initial animation
   useEffect(() => {
-    // إخفاء العناصر في البداية
     gsap.set([navRef.current, ...linksRef.current], { opacity: 0, x: 50 });
     
-    // أنيميشن الشريط كامل
     gsap.to(navRef.current, {
       opacity: 1,
       x: 0,
@@ -50,7 +48,6 @@ export default function Navbar() {
       delay: 0.2
     });
     
-    // أنيميشن الشعار
     gsap.fromTo(logoRef.current, 
       { scale: 0.8, rotation: -5 },
       {
@@ -62,7 +59,6 @@ export default function Navbar() {
       }
     );
     
-    // أنيميشن الروابط
     linksRef.current.forEach((link, i) => {
       gsap.fromTo(link, 
         { opacity: 0, y: 20 },
@@ -76,7 +72,6 @@ export default function Navbar() {
       );
     });
     
-    // أنيميشن زر القائمة المختصرة
     gsap.fromTo(hamburgerRef.current, 
       { opacity: 0, scale: 0.8 },
       {
@@ -89,7 +84,7 @@ export default function Navbar() {
     );
   }, []);
 
-  // تأثير عند تمرير الصفحة
+  // Scroll effect changes
   useEffect(() => {
     if (scrolled) {
       gsap.to(navRef.current, {
@@ -99,16 +94,6 @@ export default function Navbar() {
         duration: 0.5,
         ease: 'power2.out'
       });
-      
-      gsap.to('.nav-link', {
-        color: '#333',
-        duration: 0.3
-      });
-      
-      gsap.to('.hamburger span', {
-        backgroundColor: '#333',
-        duration: 0.3
-      });
     } else {
       gsap.to(navRef.current, {
         height: '100px',
@@ -117,29 +102,44 @@ export default function Navbar() {
         duration: 0.5,
         ease: 'power2.out'
       });
-      
-      gsap.to('.nav-link', {
-        color: 'white',
-        duration: 0.3
-      });
-      
-      gsap.to('.hamburger span', {
-        backgroundColor: 'white',
-        duration: 0.3
-      });
     }
   }, [scrolled]);
 
-  // إغلاق القائمة عند تغيير الصفحة
+  // Close menu when location changes (mobile only)
   useEffect(() => {
-    setMenuOpen(false);
+    // Only run on mobile
+    if (window.innerWidth <= 992) {
+      setMenuOpen(false);
+      
+      gsap.to('.nav-links', {
+        height: 0,
+        opacity: 0,
+        duration: 0.4,
+        ease: 'power2.in'
+      });
+      
+      gsap.to('.hamburger span:nth-child(1)', {
+        transform: 'rotate(0) translateY(0)',
+        duration: 0.3
+      });
+      
+      gsap.to('.hamburger span:nth-child(2)', {
+        opacity: 1,
+        duration: 0.3
+      });
+      
+      gsap.to('.hamburger span:nth-child(3)', {
+        transform: 'rotate(0) translateY(0)',
+        duration: 0.3
+      });
+    }
   }, [location.pathname]);
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
     
     if (menuOpen) {
-      // أنيميشن إغلاق القائمة
+      // Close animation
       gsap.to('.nav-links', {
         height: 0,
         opacity: 0,
@@ -162,7 +162,7 @@ export default function Navbar() {
         duration: 0.3
       });
     } else {
-      // أنيميشن فتح القائمة
+      // Open animation
       gsap.to('.nav-links', {
         height: 'auto',
         opacity: 1,
@@ -193,12 +193,12 @@ export default function Navbar() {
       className={`navbar ${scrolled ? 'scrolled' : ''}`}
     >
       <div className="navbar-container">
-        {/* logo */}
+        {/* Logo */}
         <Link to="/" className="logo" ref={logoRef}>
           <img src={logo} alt="Logo" />
         </Link>
 
-        {/* nav links */}
+        {/* Navigation links */}
         <div className={`nav-links ${menuOpen ? 'open' : ''}`}>
           {navLinks.map((link, index) => (
             <Link
@@ -206,6 +206,12 @@ export default function Navbar() {
               to={link.path}
               ref={el => (linksRef.current[index] = el)}
               className={`nav-link ${location.pathname === link.path ? 'active' : ''}`}
+              onClick={() => {
+                // Close menu on mobile when a link is clicked
+                if (window.innerWidth <= 992) {
+                  toggleMenu();
+                }
+              }}
             >
               <span className="link-text">{link.name}</span>
               <span className="link-hover"></span>
@@ -213,7 +219,7 @@ export default function Navbar() {
           ))}
         </div>
 
-        {/* nav links for mobile*/}
+        {/* Mobile menu button */}
         <button 
           ref={hamburgerRef}
           className={`hamburger ${menuOpen ? 'open' : ''}`} 
