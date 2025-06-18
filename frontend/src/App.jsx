@@ -1,5 +1,5 @@
 import React from 'react';
-import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AdminProvider, useAdmin } from './context/AdminContext';
 import ScrollToTop from './components/ScrollToTop';
 import Navbar from './components/Navbar';
