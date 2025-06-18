@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { backendUrl } from '../../App';
 import './ProductList.css';
+import { backendUrl } from '../../App';
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -46,7 +46,7 @@ const ProductList = () => {
     fetchCategories();
   }, []);
 
-  // Fetch subcategories when category changes
+  // Fetch subcategories when category changes in edit form
   useEffect(() => {
     const fetchSubcategories = async () => {
       if (!editForm.category) {
@@ -80,7 +80,7 @@ const ProductList = () => {
           name: product.name,
           description: product.description,
           category: product.category?._id || product.category,
-          subcategory: product.subcategory?._id || product.subcategory,
+          subCategory: product.subCategory?._id || product.subCategory,
           price: product.price,
           weight: product.weight || '',
           images: product.images
@@ -129,7 +129,7 @@ const ProductList = () => {
   const filteredProducts = products.filter(product => 
     product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     (product.category?.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (product.subcategory?.name || '').toLowerCase().includes(searchTerm.toLowerCase())
+    (product.subCategory?.name || '').toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   if (loading) {
@@ -201,8 +201,8 @@ const ProductList = () => {
                         ))}
                       </select>
                       <select
-                        name="subcategory"
-                        value={editForm.subcategory}
+                        name="subCategory"
+                        value={editForm.subCategory}
                         onChange={handleEditChange}
                         className="edit-input"
                         required
@@ -276,8 +276,8 @@ const ProductList = () => {
                   <div className="table-cell">
                     <div className="category-info">
                       <span className="category">{product.category?.name || 'Uncategorized'}</span>
-                      {product.subcategory?.name && (
-                        <span className="subcategory"> / {product.subcategory.name}</span>
+                      {product.subCategory?.name && (
+                        <span className="subcategory"> / {product.subCategory.name}</span>
                       )}
                     </div>
                   </div>
@@ -285,7 +285,7 @@ const ProductList = () => {
                     <div className="product-description">{product.description}</div>
                   </div>
                   <div className="table-cell">
-                    <div className="product-price">${product.price.toFixed(2)}</div>
+                    <div className="product-price">${(product.price || 0).toFixed(2)}</div>
                     {product.weight && <div className="product-weight">{product.weight}</div>}
                   </div>
                   <div className="table-cell actions">
