@@ -1,6 +1,6 @@
 import express from 'express';
 import Category from '../models/categoryModel.js';
-import {updateCategory , deleteCategory} from '../controllers/categoryController.js'
+
 const router = express.Router();
 
 router.get('/', async (req, res) => {
@@ -22,7 +22,6 @@ router.post('/', async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 });
-router.put('/:id', updateCategory);
-router.delete('/:id', deleteCategory);
+
 
 export default router;

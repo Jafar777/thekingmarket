@@ -1,6 +1,6 @@
 import express from 'express';
 import SubCategory from '../models/subCategoryModel.js';
-import {updateSubcategory ,deleteSubcategory} from '../controllers/subcategoryController.js'
+
 
 const router = express.Router();
 
@@ -25,7 +25,6 @@ router.post('/', async (req, res) => {
   }
 });
 
-router.put('/:id', updateSubcategory);
-router.delete('/:id', deleteSubcategory);
+
 
 export default router;

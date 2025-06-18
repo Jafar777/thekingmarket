@@ -6,11 +6,9 @@ const Product = ({ product }) => {
   const navigate = useNavigate();
   const mainImage = product.images?.[0];
   
-  // Handle both category and subcategory data structures
   const categoryName = product.category?.name || 
                       (typeof product.category === 'string' ? product.category : '');
   
-  // Handle subcategory (note the capital C in the property name)
   const subcategoryName = product.subCategory?.name || 
                          (typeof product.subCategory === 'string' ? product.subCategory : '');
 
@@ -39,9 +37,12 @@ const Product = ({ product }) => {
       </div>
       <div className="product-info">
         <h3 className="product-name">{product.name}</h3>
-        <p className="product-price">${product.price.toFixed(2)}</p>
         
-        {/* Display subcategory if available */}
+        {/* Fixed price display */}
+        <p className="product-price">
+          ${(product.price || 0).toFixed(2)}
+        </p>
+        
         {subcategoryName && (
           <div className="product-subcategory">
             {subcategoryName}
