@@ -1,14 +1,67 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './DashboardHome.css';
+import axios from 'axios';
+import { backendUrl } from '../../App';
 
 const DashboardHome = () => {
-  // Sample data - in a real app, this would come from an API
-  const stats = {
-    totalProducts: 124,
-    totalCategories: 8,
-    monthlyVisitors: 4280,
-    popularProduct: 'Fresh Beef Steak'
-  };
+  const [stats, setStats] = useState({
+    totalProducts: 0,
+    totalCategories: 0,
+    monthlyVisitors: 0,
+    popularProduct: 'Loading...'
+  });
+  
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [recentActivity, setRecentActivity] = useState([]);
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        setLoading(true);
+        
+        // Fetch stats
+        const statsResponse = await axios.get(`${backendUrl}/api/dashboard/stats`);
+        setStats(statsResponse.data);
+        
+        // Fetch recent activity (you'll need to implement this endpoint)
+        const activityResponse = await axios.get(`${backendUrl}/api/dashboard/activity`);
+        setRecentActivity(activityResponse.data);
+        
+      } catch (err) {
+        console.error('Error fetching dashboard data:', err);
+        setError('Failed to load dashboard data');
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchDashboardData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="dashboard-home">
+        <h2>Dashboard Overview</h2>
+        <div className="loading-spinner">
+          <div className="spinner"></div>
+          <p>Loading dashboard data...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="dashboard-home">
+        <h2>Dashboard Overview</h2>
+        <div className="error-message">
+          <p>{error}</p>
+          <button onClick={() => window.location.reload()}>Retry</button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="dashboard-home">
@@ -43,27 +96,21 @@ const DashboardHome = () => {
       <div className="recent-activity">
         <h3>Recent Activity</h3>
         <ul>
-          <li>
-            <div className="activity-icon">📦</div>
-            <div className="activity-details">
-              <p>New product added: <strong>Organic Beef Steak</strong></p>
-              <span className="activity-time">2 hours ago</span>
-            </div>
-          </li>
-          <li>
-            <div className="activity-icon">👤</div>
-            <div className="activity-details">
-              <p>Admin <strong>KingAdmin</strong> logged in</p>
-              <span className="activity-time">4 hours ago</span>
-            </div>
-          </li>
-          <li>
-            <div className="activity-icon">✏️</div>
-            <div className="activity-details">
-              <p>Product <strong>Fresh Apples</strong> was updated</p>
-              <span className="activity-time">6 hours ago</span>
-            </div>
-          </li>
+          {recentActivity.length > 0 ? (
+            recentActivity.map((activity, index) => (
+              <li key={index}>
+                <div className="activity-icon">{activity.icon}</div>
+                <div className="activity-details">
+                  <p>{activity.description}</p>
+                  <span className="activity-time">{activity.time}</span>
+                </div>
+              </li>
+            ))
+          ) : (
+            <li className="no-activity">
+              <p>No recent activity</p>
+            </li>
+          )}
         </ul>
       </div>
     </div>

@@ -141,7 +141,7 @@ const ProductList = () => {
     );
   }
 
-  return (
+return (
     <div className="product-list">
       <h2>Manage Products</h2>
       
@@ -160,142 +160,145 @@ const ProductList = () => {
         </div>
       </div>
       
-      <div className="products-table">
-        <div className="table-header">
-          <div className="header-cell">Product</div>
-          <div className="header-cell">Category</div>
-          <div className="header-cell">Description</div>
-          <div className="header-cell">Price</div>
-          <div className="header-cell actions">Actions</div>
-        </div>
-        
-        <div className="table-body">
-          {filteredProducts.map(product => (
-            <div key={product._id} className="table-row">
-              {editingId === product._id ? (
-                <>
-                  <div className="table-cell">
-                    <input
-                      type="text"
-                      name="name"
-                      value={editForm.name}
-                      onChange={handleEditChange}
-                      className="edit-input"
-                      required
-                    />
-                  </div>
-                  <div className="table-cell">
-                    <div className="edit-category">
-                      <select
-                        name="category"
-                        value={editForm.category}
-                        onChange={handleEditChange}
-                        className="edit-input"
-                        required
-                      >
-                        <option value="">Select category</option>
-                        {categories.map(category => (
-                          <option key={category._id} value={category._id}>
-                            {category.name}
-                          </option>
-                        ))}
-                      </select>
-                      <select
-                        name="subCategory"
-                        value={editForm.subCategory}
-                        onChange={handleEditChange}
-                        className="edit-input"
-                        required
-                        disabled={subcategoriesLoading}
-                      >
-                        <option value="">Select subcategory</option>
-                        {subcategories.map(sub => (
-                          <option key={sub._id} value={sub._id}>
-                            {sub.name}
-                          </option>
-                        ))}
-                      </select>
-                      {subcategoriesLoading && <span>Loading...</span>}
-                    </div>
-                  </div>
-                  <div className="table-cell">
-                    <input
-                      type="text"
-                      name="description"
-                      value={editForm.description}
-                      onChange={handleEditChange}
-                      className="edit-input"
-                      required
-                    />
-                  </div>
-                  <div className="table-cell">
-                    <div className="price-edit">
-                      <input
-                        type="number"
-                        name="price"
-                        value={editForm.price}
-                        onChange={handleEditChange}
-                        step="0.01"
-                        min="0.01"
-                        className="edit-input"
-                        required
-                      />
+      {/* Responsive table container */}
+      <div className="table-responsive">
+        <div className="products-table">
+          <div className="table-header">
+            <div className="header-cell">Product</div>
+            <div className="header-cell">Category</div>
+            <div className="header-cell">Description</div>
+            <div className="header-cell">Price</div>
+            <div className="header-cell actions">Actions</div>
+          </div>
+          
+          <div className="table-body">
+            {filteredProducts.map(product => (
+              <div key={product._id} className="table-row">
+                {editingId === product._id ? (
+                  <>
+                    <div className="table-cell">
                       <input
                         type="text"
-                        name="weight"
-                        value={editForm.weight}
+                        name="name"
+                        value={editForm.name}
                         onChange={handleEditChange}
-                        placeholder="Weight (optional)"
                         className="edit-input"
+                        required
                       />
                     </div>
-                  </div>
-                  <div className="table-cell actions">
-                    <button onClick={handleSaveEdit} className="save-btn">💾</button>
-                    <button onClick={() => setEditingId(null)} className="cancel-btn">✕</button>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="table-cell">
-                    <div className="product-info">
-                      <div className="product-image">
-                        {product.images && product.images.length > 0 ? (
-                          <img 
-                            src={product.images[0]} 
-                            alt={product.name}
-                            className="product-img"
-                          />
-                        ) : (
-                          <div className="no-image">📷</div>
+                    <div className="table-cell">
+                      <div className="edit-category">
+                        <select
+                          name="category"
+                          value={editForm.category}
+                          onChange={handleEditChange}
+                          className="edit-input"
+                          required
+                        >
+                          <option value="">Select category</option>
+                          {categories.map(category => (
+                            <option key={category._id} value={category._id}>
+                              {category.name}
+                            </option>
+                          ))}
+                        </select>
+                        <select
+                          name="subCategory"
+                          value={editForm.subCategory}
+                          onChange={handleEditChange}
+                          className="edit-input"
+                          required
+                          disabled={subcategoriesLoading}
+                        >
+                          <option value="">Select subcategory</option>
+                          {subcategories.map(sub => (
+                            <option key={sub._id} value={sub._id}>
+                              {sub.name}
+                            </option>
+                          ))}
+                        </select>
+                        {subcategoriesLoading && <span>Loading...</span>}
+                      </div>
+                    </div>
+                    <div className="table-cell">
+                      <input
+                        type="text"
+                        name="description"
+                        value={editForm.description}
+                        onChange={handleEditChange}
+                        className="edit-input"
+                        required
+                      />
+                    </div>
+                    <div className="table-cell">
+                      <div className="price-edit">
+                        <input
+                          type="number"
+                          name="price"
+                          value={editForm.price}
+                          onChange={handleEditChange}
+                          step="0.01"
+                          min="0.01"
+                          className="edit-input"
+                          required
+                        />
+                        <input
+                          type="text"
+                          name="weight"
+                          value={editForm.weight}
+                          onChange={handleEditChange}
+                          placeholder="Weight (optional)"
+                          className="edit-input"
+                        />
+                      </div>
+                    </div>
+                    <div className="table-cell actions">
+                      <button onClick={handleSaveEdit} className="save-btn">💾</button>
+                      <button onClick={() => setEditingId(null)} className="cancel-btn">✕</button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="table-cell">
+                      <div className="product-info">
+                        <div className="product-image">
+                          {product.images && product.images.length > 0 ? (
+                            <img 
+                              src={product.images[0]} 
+                              alt={product.name}
+                              className="product-img"
+                            />
+                          ) : (
+                            <div className="no-image">📷</div>
+                          )}
+                        </div>
+                        <div className="product-name">{product.name}</div>
+                      </div>
+                    </div>
+                    <div className="table-cell">
+                      <div className="category-info">
+                        <span className="category">{product.category?.name || 'Uncategorized'}</span>
+                        {product.subCategory?.name && (
+                          <span className="subcategory"> / {product.subCategory.name}</span>
                         )}
                       </div>
-                      <div className="product-name">{product.name}</div>
                     </div>
-                  </div>
-                  <div className="table-cell">
-                    <div className="category-info">
-                      <span className="category">{product.category?.name || 'Uncategorized'}</span>
-                      {product.subCategory?.name && (
-                        <span className="subcategory"> / {product.subCategory.name}</span>
-                      )}
+                    <div className="table-cell">
+                      <div className="product-description">{product.description}</div>
                     </div>
-                  </div>
-                  <div className="table-cell">
-                    <div className="product-description">{product.description}</div>
-                  </div>
-                  <div className="table-cell">
-                    <div className="product-price">${(product.price || 0).toFixed(2)}</div>
-                    {product.weight && <div className="product-weight">{product.weight}</div>}
-                  </div>
-                  <div className="table-cell actions">
-                    <button onClick={() => setEditingId(product._id)} className="edit-btn">✏️</button>
-                    <button onClick={() => handleDelete(product._id)} className="delete-btn">🗑️</button>
-                  </div>
-                </>
-              )}
-            </div>
-          ))}
+                    <div className="table-cell">
+                      <div className="product-price">${(product.price || 0).toFixed(2)}</div>
+                      {product.weight && <div className="product-weight">{product.weight}</div>}
+                    </div>
+                    <div className="table-cell actions">
+                      <button onClick={() => setEditingId(product._id)} className="edit-btn">✏️</button>
+                      <button onClick={() => handleDelete(product._id)} className="delete-btn">🗑️</button>
+                    </div>
+                  </>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>

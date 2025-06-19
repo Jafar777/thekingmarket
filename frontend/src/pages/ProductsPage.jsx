@@ -39,9 +39,7 @@ const ProductsPage = () => {
           'frozen': '❄️',
           'beverages': '🥤',
           'snacks': '🍿',
-          'household': '🏠',
-          'personal care': '🧴',
-          'grain food':'🌾'
+          'bread':'🥖'
         };
         
         const categoriesWithEmojis = categoriesData.map(category => ({

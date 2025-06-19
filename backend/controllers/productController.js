@@ -1,5 +1,6 @@
 import { v2 as cloudinary } from "cloudinary";
 import productModel from "../models/productModel.js";
+import { logActivity } from './activityController.js';
 
 // Function for add product
 export const addProduct = async (req, res) => {
@@ -58,6 +59,8 @@ export const addProduct = async (req, res) => {
 
         const product = new productModel(productData);
         await product.save();
+        await logActivity('product_added', `New product added: ${product.name}`);
+
 
         res.status(201).json({
             success: true,
@@ -72,7 +75,8 @@ export const addProduct = async (req, res) => {
             message: error.message || "Internal Server Error"
         });
     }
-};
+
+  };
 
 // Function for list products
 export const listProducts = async (req, res) => {
@@ -189,6 +193,7 @@ export const updateProduct = async (req, res) => {
     )
     .populate('category')
     .populate('subCategory');
+  await logActivity('product_updated', `Product updated: ${updatedProduct.name}`);
 
     if (!updatedProduct) {
       return res.status(404).json({ 
@@ -209,4 +214,5 @@ export const updateProduct = async (req, res) => {
       message: error.message || "Internal Server Error" 
     });
   }
+
 };

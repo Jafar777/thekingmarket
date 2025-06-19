@@ -6,6 +6,8 @@ import connectCloudinary from './config/cloudinary.js'
 import categoryRouter from './routes/categoryRoute.js';
 import subCategoryRouter from './routes/subCategoryRoute.js';
 import productRouter from './routes/productRoute.js'
+import dashboardRouter from './routes/dashboardRoute.js';
+import activityRouter from './routes/activityRoute.js';
 
 
 // App Config
@@ -31,6 +33,10 @@ app.options('*', cors(corsOptions));
 app.use('/api/product',productRouter)
 app.use('/api/categories', categoryRouter);
 app.use('/api/subcategories', subCategoryRouter);
+
+app.use('/api/dashboard', dashboardRouter);
+app.use('/api/dashboard/activity', activityRouter);
+
 
 app.get('/',(req,res)=>{
     res.send("API Working")
