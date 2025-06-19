@@ -47,7 +47,7 @@ const WhatsAppButton = () => {
   
   const handleClick = () => {
     // Open WhatsApp chat
-    window.open("https://wa.me/15404508892", "_blank");
+    window.open("https://chat.whatsapp.com/Fh87yhg26b84OOetcWzMGM", "_blank");
     
     // Click animation
     gsap.to(buttonRef.current, {
