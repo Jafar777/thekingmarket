@@ -216,3 +216,51 @@ export const updateProduct = async (req, res) => {
   }
 
 };
+// Add this to your productController
+export const updateProductImages = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const keptImages = JSON.parse(req.body.keptImages || '[]');
+    
+    // Upload new images to Cloudinary
+    const newUrls = [];
+    for (const file of req.files) {
+      const result = await new Promise((resolve) => {
+        const stream = cloudinary.uploader.upload_stream((error, result) => {
+          if (error) {
+            console.error('Cloudinary upload error:', error);
+            resolve(null);
+          }
+          resolve(result);
+        });
+        stream.end(file.buffer);
+      });
+
+      if (result) {
+        newUrls.push(result.secure_url);
+      }
+    }
+
+    // Combine kept images with new images
+    const updatedImages = [...keptImages, ...newUrls];
+    
+    // Update product with new images
+    const updatedProduct = await productModel.findByIdAndUpdate(
+      id,
+      { images: updatedImages },
+      { new: true }
+    );
+    
+    res.json({
+      success: true,
+      message: "Images updated successfully",
+      product: updatedProduct
+    });
+  } catch (error) {
+    console.error('Error updating images:', error);
+    res.status(500).json({
+      success: false,
+      message: error.message || "Internal Server Error"
+    });
+  }
+};

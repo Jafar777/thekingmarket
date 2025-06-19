@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useRef } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import './ProductList.css';
@@ -13,6 +13,11 @@ const ProductList = () => {
   const [categories, setCategories] = useState([]);
   const [subcategories, setSubcategories] = useState([]);
   const [subcategoriesLoading, setSubcategoriesLoading] = useState(false);
+    const [imagePreviews, setImagePreviews] = useState([]);
+  const [newImages, setNewImages] = useState([]);
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [currentProductId, setCurrentProductId] = useState(null);
+  const fileInputRef = useRef(null);
 
   // Fetch products
   useEffect(() => {
@@ -102,10 +107,105 @@ const ProductList = () => {
     }
   };
 
+    useEffect(() => {
+    if (editingId) {
+      const product = products.find(p => p._id === editingId);
+      if (product) {
+        setImagePreviews(product.images || []);
+        setNewImages([]);
+      }
+    }
+  }, [editingId, products]);
+
+  
+
   const handleEditChange = (e) => {
     const { name, value } = e.target;
     setEditForm(prev => ({ ...prev, [name]: value }));
   };
+    // Handle image selection
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length === 0) return;
+
+        const newPreviews = [];
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        newPreviews.push(reader.result);
+        if (newPreviews.length === files.length) {
+          setImagePreviews(prev => [...prev, ...newPreviews]);
+          setNewImages(prev => [...prev, ...files]);
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+   // Remove an image
+ const handleRemoveImage = (index) => {
+  setImagePreviews(prev => prev.filter((_, i) => i !== index));
+  
+  // If it's a new image, remove from newImages array
+  if (index >= (imagePreviews.length - newImages.length)) {
+    const newIndex = index - (imagePreviews.length - newImages.length);
+    setNewImages(prev => prev.filter((_, i) => i !== newIndex));
+  }
+};
+
+  // Open image modal
+  const openImageModal = (productId) => {
+    setCurrentProductId(productId);
+    setShowImageModal(true);
+    
+    // Find the product
+    const product = products.find(p => p._id === productId);
+    if (product) {
+      setImagePreviews(product.images || []);
+      setNewImages([]);
+    }
+  };
+
+    // Save images
+  const saveImages = async () => {
+  if (!currentProductId) return;
+  
+  try {
+    const formData = new FormData();
+    
+    // Append new images
+    newImages.forEach(image => {
+      formData.append('images', image);
+    });
+    
+    // Send kept images as JSON
+    formData.append('keptImages', JSON.stringify(imagePreviews.filter(
+      preview => preview.startsWith('http')
+    )));
+    
+    // Send request to update images
+    const response = await axios.put(
+      `${backendUrl}/api/product/images/${currentProductId}`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }
+    );
+    
+    // Update the product in state
+    setProducts(products.map(p => 
+      p._id === currentProductId ? response.data.product : p
+    ));
+    
+    toast.success('Images updated successfully');
+    setShowImageModal(false);
+  } catch (error) {
+    console.error('Error updating images:', error);
+    toast.error('Failed to update images');
+  }
+};
+
 
   const handleSaveEdit = async () => {
     try {
@@ -292,6 +392,13 @@ return (
                     </div>
                     <div className="table-cell actions">
                       <button onClick={() => setEditingId(product._id)} className="edit-btn">✏️</button>
+                      <button 
+                        onClick={() => openImageModal(product._id)} 
+                        className="image-btn"
+                        title="Edit images"
+                      >
+                        🖼️
+                      </button>
                       <button onClick={() => handleDelete(product._id)} className="delete-btn">🗑️</button>
                     </div>
                   </>
@@ -301,8 +408,67 @@ return (
           </div>
         </div>
       </div>
-    </div>
-  );
+
+       {showImageModal && (
+        <div className="modal-overlay">
+          <div className="image-modal">
+            <h3>Edit Product Images</h3>
+            
+            <div className="image-previews">
+              {imagePreviews.map((preview, index) => (
+                <div key={index} className="image-preview-item">
+                  <img 
+                    src={preview} 
+                    alt={`Preview ${index}`} 
+                    className="preview-img"
+                  />
+                  <button 
+                    onClick={() => handleRemoveImage(index)}
+                    className="remove-img-btn"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+            
+            <div className="image-upload-controls">
+              <input
+                type="file"
+                ref={fileInputRef}
+                accept="image/*"
+                onChange={handleImageChange}
+                multiple
+                style={{ display: 'none' }}
+              />
+              <button 
+                onClick={() => fileInputRef.current.click()}
+                className="add-image-btn"
+              >
+                Add Images
+              </button>
+            </div>
+            
+            <div className="modal-buttons">
+              <button 
+                onClick={saveImages}
+                className="save-btn"
+              >
+                Save Images
+              </button>
+              <button 
+                onClick={() => setShowImageModal(false)}
+                className="cancel-btn"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+  </div>
+    
+);
 };
 
 export default ProductList;
