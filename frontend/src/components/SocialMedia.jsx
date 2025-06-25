@@ -114,7 +114,7 @@ const SocialMedia = () => {
     { 
       name: "tiktok", 
       icon: <FaTiktok className="social-icon" />,
-      url: "https://tiktok.com/@kingmarket",
+      url: "https://www.tiktok.com/@thekingmarket.net",
       color: "#4CAF50"
     },
     { 
