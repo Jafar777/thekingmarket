@@ -120,7 +120,7 @@ const SocialMedia = () => {
     { 
       name: "X", 
       icon: <FaXTwitter className="social-icon" />,
-      url: "https://twitter.com/kingmarket",
+      url: "https://x.com/kingmarket4all",
       color: "#4CAF50"
     }
   ];
