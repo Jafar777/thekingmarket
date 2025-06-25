@@ -102,7 +102,7 @@ const SocialMedia = () => {
     { 
       name: "instagram", 
       icon: <FaInstagram className="social-icon" />,
-      url: "https://instagram.com/kingmarket",
+      url: "https://www.instagram.com/kingmarket4all/",
       color: "#4CAF50"
     },
     { 
